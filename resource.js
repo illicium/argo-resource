@@ -30,9 +30,9 @@ ResourceConfig.prototype.path = function(path) {
 ResourceConfig.prototype.map = function(path, fn, methods, thisArg) {
   if (typeof path === 'function') {
     fn = path;
-    options = fn;
-    thisArg = options;
-    path = '/';
+    methods = fn;
+    thisArg = methods;
+    path = '*';
   }
 
   if (!Array.isArray(methods)) {
