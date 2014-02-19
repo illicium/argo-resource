@@ -3,6 +3,13 @@ var pipeworks = require('pipeworks');
 
 var SupportedMethods = ['get','put','patch','post','del','options','trace'];
 
+var normalizePath = function(path) {
+  if (path !== '*' && path[0] !== '/') {
+    return '/' + path;
+  }
+  return path;
+};
+
 var ResourceConfig = function() {
   this.$path = '/';
   this.$maps = [];
@@ -19,11 +26,7 @@ var ResourceConfig = function() {
 };
 
 ResourceConfig.prototype.path = function(path) {
-  if (path !== '*' && path[0] !== '/') {
-    path = '/' + path;
-  }
-
-  this.$path = path;
+  this.$path = normalizePath(path);
   return this;
 };
 
@@ -40,9 +43,7 @@ ResourceConfig.prototype.map = function(path, fn, methods, thisArg) {
     methods = ['GET'];
   }
 
-  if (path[0] !== '/') {
-    path = '/' + path;
-  }
+  path = normalizePath(path);
 
   this.$maps.push({ path: path, methods: methods, thisArg: thisArg, handler: fn });
   return this;
@@ -99,9 +100,7 @@ SupportedMethods.forEach(function(m) {
       obj.path = '/';
     }*/
 
-    if (obj.path[0] !== '/') {
-      obj.path = '/' + obj.path;
-    }
+    obj.path = normalizePath(obj.path);
 
     var key = '$' + m + 's';
 
@@ -154,6 +153,7 @@ ResourceInstaller.prototype.install = function(argo) {
   if (config.$path === '/') {
     config.$path = '*';
   }
+
   argo
     .map(config.$path, function(server) {
       server.use(function(handle) {
