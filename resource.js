@@ -37,7 +37,7 @@ ResourceConfig.prototype.map = function(path, fn, methods, thisArg) {
 
   if (!Array.isArray(methods)) {
     thisArg = methods;
-    methods = ['GET'];
+    methods = ['*'];
   }
 
   if (path[0] !== '/') {
